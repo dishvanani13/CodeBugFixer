@@ -1,8 +1,9 @@
 from flask import Flask, request, render_template
 from openai import OpenAI
-import config
+
 app = Flask(__name__)
-client =OpenAI( api_key=config.API_KEY)
+import os
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.route("/", methods=["GET","POST"])
 def index():
@@ -10,7 +11,7 @@ def index():
         code = request.form["code"]
         error = request.form["error"]
         prompt = ("Explain the error in this code without fixing it:" f"\n\n{code}\n\nError:\n\n{error}")
-        model_engine="gpt-3.3-turbo"
+        model_engine="gpt-4o-mini"
         explanation_completion = client.chat.completions.create(
             model= model_engine,
             messages=[{"role": "user", "content": f"{prompt}"}],
@@ -39,4 +40,4 @@ def index():
     return render_template("index.html")
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="127.0.0.1", port=5001)
