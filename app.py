@@ -3,7 +3,11 @@ from openai import OpenAI
 
 app = Flask(__name__)
 import os
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    raise ValueError("API key not set in environment")
+
+client = OpenAI(api_key=api_key)
 
 @app.route("/", methods=["GET","POST"])
 def index():
